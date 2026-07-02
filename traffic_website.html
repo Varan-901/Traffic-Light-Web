@@ -1,0 +1,456 @@
+<html>
+<head>
+    <title>Traffic Light</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #1a1426, #191a52);
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* Traffic signal */
+        .light {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 150px;
+            height: 550px;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 4;
+        }
+        
+        #box {
+            width: 90%;
+            height: 100%;
+            background-color: #242424;
+            border: 2px solid #141414;
+            border-radius: 20px;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            box-shadow: 0px 0px 0px 5px #141414, 
+                0px 0px 0px 10px #212121;
+        }
+
+        #pole {
+            width: 25%;
+            height: 100%;
+            background-color: #242424;
+            border: 4px solid #141414;
+            border-bottom: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        #boxtop {
+            width: 35%;
+            height: 0.1%;
+            background-color: #212121;
+            border: 4px solid #141414;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        #boxbottom {
+            width: 100%;
+            height: 1%;
+            background-color: #212121;
+            border: 4px solid #141414;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .circle {
+            height: 65px;
+            width: 65px;
+            background-color: #444343;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Road object */
+        .road {
+            position: absolute;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 12vh;
+            bottom: 0;
+            z-index: 3;
+        }
+
+        #roadbox {
+            width: 100%;
+            height: 100%;
+            background-color: #0f0f0f;
+            border-top: 4px solid #141414;
+            border-bottom: 5px dashed white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 3;
+        }
+
+        #roadlines {
+            width: 100vw;
+            height: 40px;
+            border-bottom: 5px dashed white;
+            margin: 40px auto;
+        }
+
+        /* Background Elements */
+        #moon {
+            position: absolute;
+            top: 9%; 
+            left: 4%; 
+            width: 100px;
+            height: 100px;
+            background-color: #fffab8;
+            border-radius: 50%;
+            border: 7px solid #73715f;
+            box-shadow: 0 0 50px rgba(250, 247, 207, 0.8);
+            z-index: 1;
+        }
+
+        #background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden; 
+        }
+
+        .building {
+            position: absolute;
+            bottom: 0;
+            width: 10%;
+            background-color: #0d0d0d;
+            border: 10px solid #0f0f0f;
+            margin: 10px;
+            filter: blur(5px);
+            z-index: 1;
+        }
+
+        .building::after {
+            content: "";
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background: repeating-linear-gradient(
+                to bottom, 
+                rgba(255, 255, 255, 0.3) 0%, 
+                rgba(64, 64, 64, 0.3) 1%,
+                transparent 1%, 
+                transparent 10%,
+                rgba(64, 64, 64, 0.3) 10%,
+                rgba(64, 64, 64, 0.3) 50%,
+                transparent 50%);
+            background-size: 100% 50px;
+        }
+
+        .star {
+            position: absolute;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0px 0px 5px rgb(255,255,255);
+            width: 4px;
+            height: 4px;
+            filter: blur(0.5px);
+            z-index: 0;
+            animation: twinkle 1s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .cloud {
+            position: absolute;
+            top: 5%; 
+            width: 200px;
+            height: 60px;
+            background-color: #b5b5b5;
+            border-radius: 50px;
+            z-index: 1;
+            opacity: 0.5;
+            filter: blur(10px);
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background-color: #757575;
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .cloud::before {
+            width: 120px;
+            height: 100px;
+            top: -20px;
+            left: 20px;
+        }
+
+        .cloud::after {
+            width: 140px;
+            height: 120px;
+            top: -30px;
+            right: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="moon"></div>
+    <div id="background"></div>
+    <div class="light">
+        <div id="boxtop"></div>
+        <div id="box">
+            <div id="circle1" class="circle" onclick="colorchange(1)"></div>
+            <div id="circle2" class="circle" onclick="colorchange(2)"></div>
+            <div id="circle3" class="circle" onclick="colorchange(3)"></div>
+        </div>
+        <div id="pole"></div>
+        <div id="boxbottom"></div>
+    </div>
+
+    <div class="road">
+        <div id="roadbox">
+            <div id="roadlines"></div>
+        </div>
+    </div>
+
+    <script>
+        function generateBuildings(numBuildings) {
+            const background = document.getElementById("background");
+
+            for (let i = 0; i < numBuildings; i++) {
+                const building = document.createElement("div");
+                building.classList.add("building");
+
+                const building_height = Math.floor(Math.random() * 31) + 30;
+                building.style.height = `${building_height}vh`;
+
+                const building_left = Math.floor(Math.random() * 90);
+                building.style.left = `${building_left}vw`;
+
+                const building_bottom = Math.random() * 5 + 5;
+                building.style.bottom = `${building_bottom}vh`;
+
+                background.appendChild(building);
+            }
+        }
+
+        function generateStars(numStars) {
+            const body = document.body;
+
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement("div");
+                star.classList.add("star");
+
+                const star_top = Math.floor(Math.random() * 80) + 5;
+                star.style.top = `${star_top}vh`;
+
+                const star_left = Math.floor(Math.random() * 100);
+                star.style.left = `${star_left}vw`;
+
+                body.appendChild(star);
+            }
+        }
+
+        function generateClouds(numClouds) {
+            const body = document.body;
+
+            for (let i = 0; i < numClouds; i++) {
+                const cloud = document.createElement("div");
+                cloud.classList.add("cloud");
+
+                const cloudTop = Math.floor(Math.random() * 50) + 5;
+                const cloudLeft = Math.floor(Math.random() * 100);
+
+                cloud.style.top = `${cloudTop}vh`;
+                cloud.style.left = `${cloudLeft}vw`;
+
+                body.appendChild(cloud);
+
+                const speed = Math.random() + 1;
+                animateCloud(cloud, speed);
+            }
+        }
+
+        function animateCloud(cloud, speed) {
+            let currentPosition = (Math.random() * 50) - 30;
+            const cloudMovement = setInterval(() => {
+                currentPosition += speed/5;
+                cloud.style.left = `${currentPosition}vw`;
+
+                if (currentPosition >= 100)
+                    currentPosition = -20;
+            }, 20);
+        }
+
+        window.onload = function() {
+            generateBuildings(10);
+            generateStars(50);
+            generateClouds(4)
+        };
+
+        let c1 = document.getElementById("circle1");
+        let c2 = document.getElementById("circle2");
+        let c3 = document.getElementById("circle3"); 
+
+        const red = "#cf3732";
+        const yellow = "#f5d75f";
+        const green = "#3aba5c";
+        const off = "#444343";
+
+        let currentColor = off;
+        let yellowBlinkInterval = null;
+        let isYellowOn = false;
+
+        function stopYellowBlink() {
+            if (yellowBlinkInterval !== null) {
+                clearInterval(yellowBlinkInterval);
+                yellowBlinkInterval = null;
+                c2.style.backgroundColor = off;
+                isYellowOn = false;
+            }
+        }
+
+        function colorchange(clicked) {
+            stopYellowBlink();
+
+            if (clicked == 1) {
+                if (currentColor == green) {
+                    c2.style.backgroundColor = yellow;
+                    c2.style.boxShadow = "0px 0px 30px rgb(240, 199, 89)";
+                    fetch("/yellowLEDon")
+                    c3.style.backgroundColor = off;
+                    c3.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                    fetch("/greenLEDoff")
+                    setTimeout(() => {
+                        c1.style.backgroundColor = red;
+                        c1.style.boxShadow = "0px 0px 30px rgb(230, 92, 83)";
+                        fetch("/redLEDon")
+                        c2.style.backgroundColor = off;
+                        c2.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                        fetch("/yellowLEDoff")
+                        c3.style.backgroundColor = off;
+                        c3.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                        fetch("/greenLEDoff")
+                        currentColor = red;
+                    }, 1000);
+                } else {
+                    currentColor = red;
+                    c1.style.backgroundColor = red;
+                    c1.style.boxShadow = "0px 0px 30px rgb(230, 92, 83)";
+                    fetch("/redLEDon")
+                    c2.style.backgroundColor = off;
+                    c2.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                    fetch("/yellowLEDoff")
+                    c3.style.backgroundColor = off;
+                    c3.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                    fetch("/greenLEDoff")
+                }
+            }
+
+            else if (clicked == 2) {
+                currentColor = yellow;
+                c1.style.backgroundColor = off;
+                c1.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                fetch("/redLEDoff")
+                c2.style.backgroundColor = yellow;
+                c2.style.boxShadow = "0px 0px 30px rgb(240, 199, 89)";
+                fetch("/yellowLEDon")
+                c3.style.backgroundColor = off;
+                c3.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                fetch("/greenLEDoff")
+
+                yellowBlinkInterval = setInterval(() => {
+                    if (isYellowOn) {
+                        c2.style.backgroundColor = yellow;
+                        c2.style.boxShadow = "0px 0px 30px rgb(240, 199, 89)";
+                        fetch("/yellowLEDon")
+                    } else {
+                        c2.style.backgroundColor = off;
+                        c2.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                        fetch("/yellowLEDoff")
+                    }
+                    isYellowOn = !isYellowOn;
+                }, 300);
+            }
+
+            else if (clicked == 3) {
+                if (currentColor == red) {
+                    c2.style.backgroundColor = yellow;
+                    c2.style.boxShadow = "0px 0px 30px rgb(240, 199, 89)";
+                    fetch("/yellowLEDon")
+                    setTimeout(() => {
+                        c1.style.backgroundColor = off;
+                        c1.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                        fetch("/redLEDoff")
+                        c2.style.backgroundColor = off;
+                        c2.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                        fetch("/yellowLEDoff")
+                        c3.style.backgroundColor = green;
+                        c3.style.boxShadow = "0px 0px 30px rgb(75, 227, 85)";
+                        fetch("/greenLEDon")
+                        currentColor = green;
+                    }, 1000);
+                } else {
+                    currentColor = green;
+                    c1.style.backgroundColor = off;
+                    c1.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                    fetch("/redLEDoff")
+                    c2.style.backgroundColor = off;
+                    c2.style.boxShadow = "0px 0px 0px rgb(0, 0, 0)";
+                    fetch("/yellowLEDoff")
+                    c3.style.backgroundColor = green;
+                    c3.style.boxShadow = "0px 0px 30px rgb(75, 227, 85)";
+                    fetch("/greenLEDon")
+                }
+            }
+        }
+    </script>
+</body>
+</html>
