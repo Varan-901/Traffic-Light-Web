@@ -1,6 +1,6 @@
 # Traffic-Light-Web (OLD)
-Simple web-based traffic light system using HTML, CSS, JavaScript Stack + ESP32 Arduino
-(Created for Mechlab Course, June 2025)
+<b>Simple web-based traffic light system using HTML, CSS, JavaScript Stack + ESP32 Arduino</b><br>
+_(Created for Mechlab Course, June 2025)_
 
 ## Features
 - Website with randomly generated backdrop features
